@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestalt-terapia e Saúde Mental · Giovana de Morais Zago</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* === THEME TOKENS === */
+:root{
+  --bg:#ece7de;
+  --bg-soft:#f6f1e8;
+  --card:#fbf8f1;
+  --green-900:#1b3a34;
+  --green-800:#2f5b4f;
+  --green-700:#266052;
+  --green-100:#d9e4dc;
+  --green-50:#e9efe9;
+  --ink:#22322e;
+  --muted:#5d726b;
+  --line:rgba(38,96,82,.22);
+  --accent:#266052;
+  --stage-bg:#141f1c;
+  --slide-bg:var(--bg);
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'Manrope',system-ui,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --dur:.7s;
+}
+/* === VIEWPORT-BASE (html-slide skill, mandatory) === */
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--stage-bg,#000)}
+.deck-viewport{position:fixed;inset:0;overflow:hidden;background:var(--stage-bg,#000)}
+.deck-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;transform-origin:0 0;background:var(--slide-bg,#fff)}
+.slide{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;display:block;visibility:hidden;opacity:0;pointer-events:none;background:var(--slide-bg,#fff)}
+.slide.active,.slide.visible{visibility:visible;opacity:1;pointer-events:auto;z-index:1}
+img,video,canvas,svg{max-width:100%;max-height:100%}
+.deck-controls{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:1000}
+@media print{html,body{width:1920px;height:auto;overflow:visible;background:#fff}*{ -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }.deck-viewport{position:static;overflow:visible;background:#fff}.deck-stage{position:static;width:auto;height:auto;transform:none!important;background:none}.slide{position:relative;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always;overflow:hidden}.slide:last-child{break-after:auto;page-break-after:auto}.slide .reveal{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}.breathe{animation:none!important}.deck-controls{display:none!important}.side-controls{display:none!important}}
+@page{size:1920px 1080px;margin:0}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.2s!important}}
+body.overview .deck-viewport{overflow:auto;background:#222}
+body.overview .deck-stage{position:relative;transform:none!important;width:100%;max-width:1800px;margin:0 auto;height:auto;display:flex;flex-wrap:wrap;padding:40px;justify-content:flex-start;background:transparent;counter-reset:overview-slide}
+body.overview .slide{position:relative;visibility:visible!important;opacity:1!important;transform:scale(.19)!important;transform-origin:0 0;margin-right:calc(1920px*.19 - 1920px + 36px);margin-bottom:calc(1080px*.19 - 1080px + 36px);cursor:pointer;box-shadow:0 0 0 6px rgba(255,255,255,.1);pointer-events:auto;transition:transform .2s,box-shadow .2s!important}
+body.overview .slide::after{counter-increment:overview-slide;content:counter(overview-slide)!important;position:absolute!important;top:60px!important;left:60px!important;width:150px!important;height:150px!important;background:var(--accent,#1e2bfa)!important;color:#fff!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:70px!important;font-weight:700!important;font-family:var(--font-display,sans-serif)!important;z-index:2147483647!important;box-shadow:0 20px 40px rgba(0,0,0,.5)!important;border:6px solid #fff!important}
+body.overview .slide *{opacity:1!important}
+body.overview .slide .reveal{opacity:1!important;transform:none!important;transition:none!important}
+body.overview .slide:hover{transform:scale(.20)!important;box-shadow:0 0 0 16px var(--accent,#1e2bfa);z-index:10}
+body.overview .slide.active{box-shadow:0 0 0 16px #059669}
+body.overview .deck-controls,body.overview .edit-hotzone,body.overview .edit-toggle{display:none!important}
+/* === BASE === */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide-inner{position:absolute;inset:0;padding:84px 110px 120px;display:flex;flex-direction:column;justify-content:center}
+.eyebrow{display:flex;align-items:center;gap:18px;font-size:22px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--green-700);margin-bottom:26px}
+.eyebrow .num{display:none!important}
+h1{font-family:var(--font-display);font-weight:500;line-height:1.02;letter-spacing:-.01em;color:var(--green-900)}
+h2{font-family:var(--font-display);font-weight:500;line-height:1.05;color:var(--green-900)}
+.sub{font-size:32px;line-height:1.45;color:#33463f}
+.lead{font-size:34px;line-height:1.5;color:#33463f;max-width:1400px}
+.small{font-size:24px;color:var(--muted)}
+.footer{position:absolute;left:110px;right:110px;bottom:44px;display:flex;justify-content:space-between;align-items:center;font-size:21px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.footer .bar{position:absolute;top:-18px;left:0;right:0;height:2px;background:var(--line)}
+.blob{position:absolute;pointer-events:none;opacity:.5}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:28px;padding:44px 46px;box-shadow:0 24px 60px rgba(27,58,52,.10)}
+.tag{display:inline-flex;align-items:center;padding:12px 26px;border-radius:99px;background:rgba(38,96,82,.10);border:1.5px solid var(--line);color:var(--green-800);font-size:25px;font-weight:700}
+.pill{display:inline-flex;padding:14px 30px;border-radius:99px;background:var(--green-800);color:#f4efe4;font-size:25px;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:36px}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:28px}
+.quote{font-family:var(--font-display);font-style:italic}
+/* === ANIMATIONS (calm) === */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+.slide.visible .reveal{opacity:1;transform:translateY(0)}
+.slide.visible .reveal:nth-child(1){transition-delay:.08s}
+.slide.visible .reveal:nth-child(2){transition-delay:.18s}
+.slide.visible .reveal:nth-child(3){transition-delay:.28s}
+.slide.visible .reveal:nth-child(4){transition-delay:.38s}
+.slide.visible .reveal:nth-child(5){transition-delay:.48s}
+.slide.visible .reveal:nth-child(6){transition-delay:.58s}
+.breathe{animation:breathe 7s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+/* === CONTROLS (discretos) === */
+.deck-controls{display:flex;align-items:center;gap:10px;background:transparent;border:1px solid transparent;padding:8px 12px;border-radius:99px;opacity:.16;transition:opacity .3s}
+.deck-controls:hover{opacity:.9;background:rgba(20,31,28,.55);border-color:rgba(255,255,255,.12)}
+.deck-controls button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(20,31,28,.25);background:rgba(236,231,222,.6);color:#1b3a34;font-size:18px;cursor:pointer;line-height:1}
+.deck-controls button:hover{background:#266052;color:#ece7de}
+#progress{width:120px;height:3px;background:rgba(27,58,52,.18);border-radius:99px;overflow:hidden}
+#progressFill{height:100%;width:0;background:rgba(38,96,82,.55);border-radius:99px}
+#counter{color:rgba(27,58,52,.55);font:700 14px var(--font-body);min-width:52px;text-align:center}
+/* botoes laterais (visao geral + tela cheia) */
+.side-controls{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:1000;display:flex;flex-direction:column;gap:10px;opacity:.16;transition:opacity .3s}
+.side-controls:hover{opacity:.9}
+.side-controls button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(20,31,28,.25);background:rgba(236,231,222,.6);color:#1b3a34;font-size:16px;cursor:pointer;line-height:1}
+.side-controls button:hover{background:#266052;color:#ece7de}
+.side-controls .pillbtn{width:auto;height:34px;padding:0 14px;border-radius:99px;font-size:13px;font-weight:800;letter-spacing:.08em}
+
+/* some em tela cheia */
+:fullscreen .deck-controls,::backdrop .deck-controls{display:none!important}
+:fullscreen .hint,::backdrop .hint{display:none!important}
+:-webkit-full-screen .deck-controls{display:none!important}
+:-webkit-full-screen .side-controls{display:none!important}
+:fullscreen .side-controls,::backdrop .side-controls{display:none!important}
+body.overview .side-controls{display:none!important}
+.dark{background:var(--green-900)!important;color:#ece7de}
+.dark h1,.dark h2{color:#f2ecdf}
+.dark .sub,.dark .lead{color:#d8d2c2}
+.dark .card{background:rgba(236,231,222,.07);border-color:rgba(236,231,222,.22);box-shadow:none}
+.dark .eyebrow{color:#cfd8cf}.dark .eyebrow::before{background:#cfd8cf}
+.dark .footer{color:rgba(236,231,222,.65)}.dark .footer .bar{background:rgba(236,231,222,.2)}
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- 1 CAPA -->
+<section class="slide active" data-title="Capa">
+<div class="slide-inner">
+<div class="eyebrow reveal">Gestalt-terapia e saúde mental</div>
+<h1 class="reveal" style="font-size:128px;max-width:1350px">Gestalt-terapia<br>e Saúde Mental</h1>
+<p class="reveal sub" style="margin-top:26px;font-size:38px"><em class="quote">Intervenções em Ansiedade, Depressão e Sofrimento Existencial</em></p>
+<div class="reveal" style="display:flex;gap:22px;margin-top:44px;align-items:center">
+<span class="pill">Giovana de Morais Zago</span>
+<span class="tag">Psicóloga &nbsp;|&nbsp; CRP-PR 08/45995</span>
+</div>
+<div class="reveal" style="position:absolute;right:130px;top:50%;transform:translateY(-50%);text-align:center">
+<img src="Giovana-palestra.png" alt="Giovana de Morais Zago" style="width:340px;height:340px;border-radius:50%;border:3px solid var(--green-700);object-fit:cover;object-position:center 22%">
+<p style="margin-top:22px;font-size:28px;font-weight:700;color:var(--green-800)">@psi.giovanamoraiszago</p>
+</div>
+</div>
+<div class="footer"><span>Giovana de Morais Zago • Psicóloga</span><span>Ansiedade • Depressão • Sofrimento existencial</span><span class="bar"></span></div>
+</section>
+
+<!-- 2 OLHAR -->
+<section class="slide" data-title="Olhar para o sofrimento">
+<div class="slide-inner">
+<p class="reveal lead" style="font-size:36px;margin-bottom:28px;max-width:1600px"></p>
+<div class="eyebrow reveal">Um olhar para o sofrimento humano</div>
+<h2 class="reveal" style="font-size:84px;margin-bottom:36px">Antes de um sintoma, existe um contexto e antes de qualquer rotulação é importante olhar para a relação.</h2>
+<div class="grid3">
+<div class="card reveal"><div class="tag">Ansiedade</div><p style="font-size:33px;margin-top:22px;line-height:1.5">Futuro • antecipação<br>incerteza • controle</p></div>
+<div class="card reveal"><div class="tag">Depressão</div><p style="font-size:33px;margin-top:22px;line-height:1.5">Distanciamento • perda de possibilidades • empobrecimento da experiência</p></div>
+<div class="card reveal"><div class="tag">Sofrimento existencial</div><p style="font-size:33px;margin-top:22px;line-height:1.5">Sentido • escolhas • perdas • liberdade • existência</p></div>
+</div>
+</div>
+<div class="footer"><span>Saúde mental para além do sintoma</span><span>02</span><span class="bar"></span></div>
+</section>
+
+<!-- 3 ANTES DO SINTOMA -->
+<section class="slide dark" data-title="Antes do sintoma">
+<svg class="blob breathe" style="left:50%;top:8%;width:1100px;transform:translateX(-50%);opacity:.35" viewBox="0 0 600 220"><ellipse cx="300" cy="110" rx="280" ry="95" fill="none" stroke="#ece7de" stroke-width="2" opacity=".5"/></svg>
+<div class="slide-inner" style="text-align:left;align-items:flex-start">
+<div class="eyebrow reveal">Antes do sintoma.</div>
+<h2 class="reveal" style="font-size:96px;max-width:1500px">Antes do sintoma,<br><span style="font-size:68px;font-style:italic;color:#d8d2c2"></span><br>existe a pessoa e sua subjetividade.</h2>
+<div class="reveal" style="display:flex;flex-wrap:wrap;gap:18px;justify-content:flex-start;margin-top:44px;max-width:1500px">
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">História</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Relações</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Corpo</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Contexto</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Necessidades</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Experiências</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Possibilidades</span>
+</div>
+</div>
+<div class="footer"><span>Como isso está acontecendo?</span><span>03</span><span class="bar"></span></div>
+</section>
+
+<!-- 4 PESSOA EM RELACAO -->
+<section class="slide" data-title="Pessoa em relação">
+<div class="slide-inner">
+<div class="eyebrow reveal">Compreender a pessoa em relação</div>
+<div class="grid2 reveal" style="align-items:center">
+<div>
+<h2 style="font-size:88px">Pessoa <span style="color:var(--green-700)">↔</span> Ambiente</h2>
+<p class="sub">Nada acontece isolado, mas em um determinado campo, através do contato e do aqui agora.</p>
+</div>
+<p class="quote" style="font-size:38px;color:var(--green-800)"></p>
+</div>
+<div class="grid5" style="margin-top:36px">
+<div class="card reveal"><div style="font-size:26px;font-weight:800;color:var(--green-700)">CAMPO</div><p style="font-size:27px;margin-top:14px">Pessoa e ambiente em constante relação.</p></div>
+<div class="card reveal"><div style="font-size:26px;font-weight:800;color:var(--green-700)">CONTATO</div><p style="font-size:27px;margin-top:14px">Como encontra e responde ao mundo.</p></div>
+<div class="card reveal"><div style="font-size:26px;font-weight:800;color:var(--green-700)">AWARENESS</div><p style="font-size:27px;margin-top:14px">Perceber-se a si e à relação.</p></div>
+<div class="card reveal"><div style="font-size:26px;font-weight:800;color:var(--green-700)">AQUI-E-AGORA</div><p style="font-size:27px;margin-top:14px">A experiência acontecendo no presente.</p></div>
+<div class="card reveal"><div style="font-size:26px;font-weight:800;color:var(--green-700)">AJUSTAMENTO CRIATIVO</div><p style="font-size:27px;margin-top:14px">Respostas possíveis ao campo.</p></div>
+</div>
+</div>
+<div class="footer"><span>Campo • Contato • Awareness</span><span>04</span><span class="bar"></span></div>
+</section>
+
+<!-- 5 AQUI E AGORA -->
+<section class="slide" data-title="Aqui-e-agora e história">
+<div class="slide-inner">
+<div class="eyebrow reveal">O aqui e agora não exclui a sua história</div>
+<h2 class="reveal" style="font-size:80px;max-width:1500px">O passado importa pela forma como se manifesta HOJE!</h2>
+<div class="reveal card" style="margin-top:40px;display:flex;align-items:center;gap:10px;font-size:34px;font-weight:700">
+<span class="tag">História</span><span style="font-size:44px;color:var(--green-700)">→</span><span class="tag">Experiência atual</span><span style="font-size:44px;color:var(--green-700)">→</span><span class="pill">Awareness</span><span style="font-size:44px;color:var(--green-700)">→</span><span class="tag">Novas possibilidades</span>
+</div>
+<p class="reveal lead" style="margin-top:30px">Ex.: aprender a agradar para ser aceita → dificuldade de dizer não → angústia → corpo, imaginação, relação terapêutica.</p>
+</div>
+<div class="footer"><span>História viva no presente</span><span>05</span><span class="bar"></span></div>
+</section>
+
+<!-- 6 ANSIEDADE -->
+<section class="slide dark" data-title="Ansiedade">
+<div class="slide-inner">
+<div class="eyebrow reveal">Ansiedade</div>
+<h1 class="reveal" style="font-size:104px">Quando o futuro<br>ocupa o presente</h1>
+<div class="reveal" style="position: absolute;right:500px;top:30%;font-size:44px;letter-spacing:.06em;color:#cfd8cf">Ansiedade</div>
+<div class="grid2" style="margin-top:36px">
+<div class="reveal" style="display:flex;flex-wrap:wrap;gap:16px;align-content:flex-start">
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Antecipação</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Incerteza</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Controle</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Tensão corporal</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Preocupação</span>
+</div>
+<div class="card reveal"><div class="small" style="color:#cfd8cf;letter-spacing:.2em;font-weight:800">ÊNIO BRITO PINTO</div><p class="quote" style="font-size:38px;margin-top:16px">“Do controle e da luta para uma possibilidade de diálogo e cuidado.”</p></div>
+</div>
+</div>
+<div class="footer"><span>Dialogar com a ansiedade</span><span>06</span><span class="bar"></span></div>
+</section>
+
+<!-- 7 COMPREENDER -->
+<section class="slide" data-title="Compreender, não eliminar">
+<div class="slide-inner">
+<div class="eyebrow reveal">Em vez de eliminar, compreender</div>
+<p class="reveal quote" style="font-size:44px;color:var(--green-800);margin-bottom:6px">Qual a função dessa ansiedade?</p>
+<div class="grid2" style="align-items:stretch">
+<div class="card reveal" style="border-style:dashed"><div class="small" style="font-weight:800">PERGUNTA HABITUAL</div><p style="font-size:44px;font-family:var(--font-display);margin-top:12px">“Como faço essa ansiedade desaparecer?”</p></div>
+<div class="card reveal" style="background:var(--green-800);border-color:var(--green-800);color:#f2ecdf"><div class="small" style="color:#d8d2c2;font-weight:800">PERGUNTA GESTÁLTICA</div><p style="font-size:44px;font-family:var(--font-display);margin-top:12px">“O que está acontecendo comigo quando fico ansiosa?”</p></div>
+</div>
+<div class="reveal" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:30px">
+<span class="tag">O que estou antecipando?</span><span class="tag">O que tento controlar?</span><span class="tag">O que evito?</span><span class="tag">O que sinto no corpo?</span><span class="tag">O que significa não saber?</span>
+</div>
+</div>
+<div class="footer"><span>Ampliar a investigação</span><span>07</span><span class="bar"></span></div>
+</section>
+
+<!-- 8 EXEMPLO ANSIEDADE -->
+<section class="slide" data-title="Exemplo clínico ansiedade">
+<div class="slide-inner">
+<div class="eyebrow reveal">Um exemplo clínico</div>
+<h2 class="reveal quote" style="font-size:72px">“Eu preciso saber se vai dar tudo certo.”</h2>
+<div class="grid2" style="margin-top:32px">
+<div class="card reveal"><div class="small" style="font-weight:800">O QUE APARECE</div><ul style="font-size:30px;line-height:1.65;margin-top:14px;padding-left:28px"><li>Pensamentos acelerados</li><li>Necessidade de prever possibilidades</li><li>Intolerância à incerteza</li><li>Tentativa constante de controle</li></ul></div>
+<div class="card reveal"><div class="small" style="font-weight:800">PERGUNTAS POSSÍVEIS</div><ul style="font-size:30px;line-height:1.65;margin-top:14px;padding-left:28px"><li><em>“O que significa não saber?”</em></li><li><em>“O que aconteceria se não pudesse controlar?”</em></li><li><em>“O que percebe no corpo enquanto fala disso?”</em></li></ul></div>
+</div>
+</div>
+<div class="footer"><span>Permanecer próximo da experiência</span><span>08</span><span class="bar"></span></div>
+</section>
+
+<!-- 9 INTERVENCOES ANSIEDADE -->
+<section class="slide" data-title="Intervenções ansiedade">
+<div class="slide-inner">
+<div class="eyebrow reveal">Intervenções possíveis para ansiedade</div>
+<h2 class="reveal" style="font-size:76px">Possibilidades, não protocolo.</h2>
+<div class="grid5" style="margin-top:32px">
+<div class="card reveal"><b style="font-size:27px">Exploração fenomenológica</b><p style="font-size:26px;margin-top:12px"><em>“Como isso acontece para você?”</em></p></div>
+<div class="card reveal"><b style="font-size:27px">Awareness corporal</b><p style="font-size:26px;margin-top:12px"><em>“O que percebe no corpo?”</em></p></div>
+<div class="card reveal"><b style="font-size:27px">Amplificação</b><p style="font-size:26px;margin-top:12px"><em>“O que acontece se permanecer um pouco?”</em></p></div>
+<div class="card reveal"><b style="font-size:27px">Experimentação</b><p style="font-size:26px;margin-top:12px"><em>“Vamos experimentar fazer diferente?”</em></p></div>
+<div class="card reveal"><b style="font-size:27px">Diálogo</b><p style="font-size:26px;margin-top:12px"><em>“O que essa ansiedade tem para dizer?”</em></p></div>
+</div>
+<p class="reveal small" style="margin-top:26px;font-size:50px">A técnica nasce do encontro com o que está acontecendo.</p>
+</div>
+<div class="footer"><span>A técnica não vem antes da pessoa</span><span>09</span><span class="bar"></span></div>
+</section>
+
+<!-- 10 DEPRESSAO -->
+<section class="slide dark" data-title="Depressão">
+<div class="slide-inner">
+<div class="eyebrow reveal">Depressão</div>
+<h1 class="reveal" style="font-size:100px">Quando as possibilidades parecem diminuir</h1>
+<div class="reveal" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:36px">
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Distanciamento</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Perda de interesse</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Empobrecimento da experiência</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Desesperança</span>
+<span class="tag" style="background:rgba(236,231,222,.12);color:#ece7de;border-color:rgba(236,231,222,.3)">Dificuldade de reconhecer necessidades</span>
+</div>
+<p class="reveal lead" style="margin-top:32px">Antes de devolver função: <em class="quote">como essa pessoa está vivendo?</em></p>
+</div>
+<div class="footer"><span>O que foi perdido? O que mudou?</span><span>10</span><span class="bar"></span></div>
+</section>
+
+<!-- 11 DEPRESSAO E CONTATO -->
+<section class="slide" data-title="Depressão e contato">
+<div class="slide-inner">
+<div class="eyebrow reveal">Depressão e contato</div>
+<h2 class="reveal" style="font-size:82px;margin-bottom:38px">O que aconteceu com o contato?</h2>
+<ul class="reveal" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:24px;max-width:1500px">
+<li style="display:flex;gap:22px;align-items:baseline;font-size:37px;line-height:1.45;color:#33463f"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:var(--green-700);transform:translateY(-2px)"></span><span><b style="color:var(--green-900);font-weight:800">Consigo</b> — Como percebo o que sinto e preciso?</span></li>
+<li style="display:flex;gap:22px;align-items:baseline;font-size:37px;line-height:1.45;color:#33463f"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:var(--green-700);transform:translateY(-2px)"></span><span><b style="color:var(--green-900);font-weight:800">Com o outro</b> — Como tenho vivido minhas relações?</span></li>
+<li style="display:flex;gap:22px;align-items:baseline;font-size:37px;line-height:1.45;color:#33463f"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:var(--green-700);transform:translateY(-2px)"></span><span><b style="color:var(--green-900);font-weight:800">Com atividades</b> — O que ainda me mobiliza?</span></li>
+<li style="display:flex;gap:22px;align-items:baseline;font-size:37px;line-height:1.45;color:#33463f"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:var(--green-700);transform:translateY(-2px)"></span><span><b style="color:var(--green-900);font-weight:800">Com projetos</b> — Há algo apontando para o futuro?</span></li>
+<li style="display:flex;gap:22px;align-items:baseline;font-size:37px;line-height:1.45;color:#33463f"><span style="flex:0 0 auto;width:14px;height:14px;border-radius:50%;background:var(--green-700);transform:translateY(-2px)"></span><span><b style="color:var(--green-900);font-weight:800">Com o sentido</b> — O que foi perdido?</span></li>
+</ul>
+<p class="reveal" style="margin-top:36px;font-size:28px;color:var(--muted);border-top:2px solid var(--line);padding-top:22px;max-width:1500px">O contato como lente clínica: sem pressa, reconhecer a perda antes de reconstruir.</p>
+</div>
+<div class="footer"><span>Investigar sem pressa</span><span>11</span><span class="bar"></span></div>
+</section>
+
+<!-- 12 SENTE FALTA -->
+<section class="slide" data-title="Do que sente falta">
+<div class="slide-inner" style="text-align:left;align-items:flex-start">
+<div class="eyebrow reveal">Uma pergunta que abre caminhos</div>
+<h2 class="reveal" style="font-size:104px">Do que você<br>sente falta?</h2>
+<div class="reveal" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:flex-start;margin-top:36px;max-width:1500px">
+<span class="tag">De alguém?</span><span class="tag">De uma relação?</span><span class="tag">De um projeto?</span><span class="tag">De uma versão de si?</span><span class="tag">De um desejo?</span><span class="tag">De uma possibilidade?</span><span class="tag">De sentido?</span>
+</div>
+<p class="reveal small" style="margin-top:28px;font-size:42px">Avaliação de risco e cuidado interdisciplinar seguem indispensáveis.</p>
+</div>
+<div class="footer"><span>Perceber o que existe na experiência</span><span>12</span><span class="bar"></span></div>
+</section>
+
+<!-- 13 EXISTENCIAL -->
+<section class="slide" data-title="Sofrimento existencial">
+<div class="slide-inner">
+<div class="eyebrow reveal">Sofrimento existencial</div>
+<div class="grid2">
+<div class="card reveal" style="border-style:dashed"><div class="small" style="font-weight:800">NEM SEMPRE É</div><p style="font-size:52px;font-family:var(--font-display)">“Como faço isso passar?”</p></div>
+<div class="card reveal" style="background:var(--green-800);color:#f2ecdf;border-color:var(--green-800)"><div class="small" style="color:#d8d2c2;font-weight:800">ÀS VEZES É</div><p style="font-size:52px;font-family:var(--font-display)">“O que isso significa para mim?”</p></div>
+</div>
+<div class="reveal" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:28px">
+<span class="tag">Sentido</span><span class="tag">Escolhas</span><span class="tag">Liberdade</span><span class="tag">Responsabilidade</span><span class="tag">Perdas</span><span class="tag">Solidão</span><span class="tag">Finitude</span><span class="tag">Identidade</span>
+</div>
+</div>
+<div class="footer"><span>Nem todo sofrimento é doença</span><span>13</span><span class="bar"></span></div>
+</section>
+
+<!-- 14 FUKUMITSU -->
+<section class="slide dark" data-title="Karina Fukumitsu">
+<div class="slide-inner">
+<div class="eyebrow reveal">Karina Fukumitsu • sofrimento existencial e crise</div>
+<h2 class="reveal" style="font-size:78px">Acolher, compreender, sustentar, cuidar.</h2>
+<div style="margin-top:34px;display:flex;flex-direction:column;gap:20px">
+<div class="card reveal" style="display:flex;gap:26px;align-items:center"><span class="pill">1</span><p style="font-size:36px"><b>Acolher o sofrimento:</b> aproximar-se sem reduzir a pessoa à dor.</p></div>
+<div class="card reveal" style="display:flex;gap:26px;align-items:center"><span class="pill">2</span><p style="font-size:36px"><b>Compreender a experiência:</b> reconhecer, avaliar riscos.</p></div>
+<div class="card reveal" style="display:flex;gap:26px;align-items:center"><span class="pill">3</span><p style="font-size:36px"><b>Sustentar a crise:</b> permanecer diante do que acontece.</p></div>
+<div class="card reveal" style="display:flex;gap:26px;align-items:center"><span class="pill">4</span><p style="font-size:36px"><b>Construir possibilidades de cuidado:</b> junto com a pessoa.</p></div>
+</div>
+</div>
+<div class="footer"><span>Saúde existencial e cuidado</span><span>14</span><span class="bar"></span></div>
+</section>
+
+<!-- 15 EXEMPLO EXISTENCIAL -->
+<section class="slide" data-title="Exemplo existencial">
+<div class="slide-inner">
+<div class="eyebrow reveal">Um exemplo clínico</div>
+<h2 class="reveal quote" style="font-size:64px;max-width:1550px">“Minha vida está aparentemente bem. Mas eu não sei se é essa vida que eu quero.”</h2>
+<div class="card reveal" style="margin-top:30px"><div class="small" style="font-weight:800">PERGUNTAS POSSÍVEIS</div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:18px"><span class="tag">O que perdeu significado?</span><span class="tag">Quais escolhas são realmente suas?</span><span class="tag">O que vem das expectativas dos outros?</span><span class="tag">O que ainda faz sentido?</span><span class="tag">O que gostaria de experimentar?</span></div></div>
+<p class="reveal small" style="margin-top:42px;font-size:42px">Método fenomenológico</p>
+</div>
+<div class="footer" style="font-size: 20px;"><span>A intervenção emerge do contato</span><span>15</span><span class="bar"></span></div>
+</section>
+
+<!-- 16 ENCONTRO -->
+<section class="slide" data-title="Intervenção é encontro">
+<div class="slide-inner">
+<div class="eyebrow reveal" style="font-size: 42px">A intervenção nasce do encontro</div>
+<h2 class="reveal" style="font-size:92px">Presença antes da técnica.</h2>
+<div class="grid5" style="margin-top:28px">
+<div class="card reveal" style="text-align:left"><div style="font-size:60px">○</div><b style="font-size:28px">Presença</b></div>
+<div class="card reveal" style="text-align:left"><div style="font-size:60px">◇</div><b style="font-size:28px">Diálogo</b></div>
+<div class="card reveal" style="text-align:left"><div style="font-size:60px">◎</div><b style="font-size:28px">Awareness</b></div>
+<div class="card reveal" style="text-align:left"><div style="font-size:60px">↔</div><b style="font-size:28px">Contato</b></div>
+<div class="card reveal" style="text-align:left"><div style="font-size:60px">✳</div><b style="font-size:28px">Experimentação</b></div>
+</div>
+<div class="card reveal" style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;font-size:28px"><span class="small" style="font-weight:800;width:100%">PARA O TERAPEUTA</span><span class="tag">O que está acontecendo aqui?</span><span class="tag">O que estou percebendo?</span><span class="tag">O que o paciente percebe?</span><span class="tag">O que acontece entre nós?</span></div>
+</div>
+<div class="footer" style="font-size:26px"><span>O que essa pessoa precisa perceber agora?</span><span>16</span><span class="bar"></span></div>
+</section>
+
+<!-- 17 COMPREENDER ANTES -->
+<section class="slide dark" data-title="Compreender antes de intervir">
+<div class="slide-inner">
+<div class="eyebrow reveal">Compreender antes de intervir</div>
+<p class="reveal sub" style="font-size:36px"></p>
+<h2 class="reveal" style="font-size:76px">Uma possibilidade de raciocínio clínico</h2>
+<div style="margin-top:30px;display:grid;grid-template-columns:repeat(5,1fr);gap:26px">
+<div class="card reveal"><div style="font-size:64px;font-family:var(--font-display);color:var(--green-700)">1</div><b style="font-size:30px">Aproximar-se da experiência</b></div>
+<div class="card reveal"><div style="font-size:64px;font-family:var(--font-display);color:var(--green-700)">2</div><b style="font-size:30px">Ampliar a awareness</b></div>
+<div class="card reveal"><div style="font-size:64px;font-family:var(--font-display);color:var(--green-700)">3</div><b style="font-size:30px">Reconhecer necessidades</b></div>
+<div class="card reveal"><div style="font-size:64px;font-family:var(--font-display);color:var(--green-700)">4</div><b style="font-size:30px">Perceber contato e ajustamento</b></div>
+<div class="card reveal" style="background:var(--green-700);border-color:var(--green-700);color:#f2ecdf"><div style="font-size:64px;font-family:var(--font-display)">5</div><b style="font-size:30px">Ampliar possibilidades</b></div>
+</div>
+</div>
+<div class="footer"><span>Primeiro compreender</span><span>17</span><span class="bar"></span></div>
+</section>
+
+<!-- 18 VIVENCIAL -->
+<section class="slide" data-title="Experiência vivencial">
+<div class="slide-inner">
+<div class="eyebrow reveal">Experiência vivencial</div>
+<h2 class="reveal" style="font-size:120px">Vamos experimentar?</h2>
+<p class="reveal quote" style="font-size:56px">“O que está acontecendo comigo agora?”</p>
+
+</div>
+<div class="footer"><span>Awareness na prática</span><span>18</span><span class="bar"></span></div>
+</section>
+
+<!-- 19 NOTOU -->
+<section class="slide" data-title="O que notou">
+<div class="slide-inner" style="text-align:left;align-items:flex-start">
+<div class="eyebrow reveal">Partilha</div>
+<h2 class="reveal" style="font-size:110px">O que você notou em você?</h2>
+
+</div>
+
+</section>
+
+<!-- 20 EXPERIMENTAMOS -->
+<section class="slide" data-title="O que experimentamos">
+<div class="slide-inner">
+<div class="eyebrow reveal">O que acabamos de experimentar?</div>
+<h2 class="reveal" style="font-size:80px">Awareness em 4 movimentos.</h2>
+<div class="grid2" style="margin-top:28px">
+<div class="card reveal"><div class="small" style="font-weight:800">FLUXO</div><p style="font-size:44px;margin-top:10px"><b>Perceber</b> → <b>Reconhecer</b> → <b>Dar espaço</b> → <b>Ampliar possibilidades</b></p></div>
+<div style="display:grid;gap:20px">
+<div class="card reveal"><div class="small" style="font-weight:800">NÃO BUSCAMOS</div><p style="font-size:30px">Eliminar • Resposta certa • Interpretar</p></div>
+<div class="card reveal" style="background:var(--green-800);color:#f2ecdf;border-color:var(--green-800)"><div class="small" style="color:#d8d2c2;font-weight:800">BUSCAMOS</div><p style="font-size:30px"> Aproximar-se • Perceber • Reconhecer necessidades</p></div>
+</div>
+</div>
+</div>
+<div class="footer"><span>Entrar em contato antes de mudar</span><span>20</span><span class="bar"></span></div>
+</section>
+
+<!-- 21 INTEGRANDO -->
+<section class="slide dark" data-title="Integrando">
+<div class="slide-inner">
+<div class="eyebrow reveal">Integrando os três temas</div>
+<h2 class="reveal" style="font-size:76px">A clínica começa no encontro.</h2>
+<div style="margin-top:28px;display:flex;flex-direction:column;gap:20px">
+<div class="card reveal" style="display:grid;grid-template-columns:360px 1fr;gap:26px;align-items:center"><span class="pill">Ansiedade</span><p class="quote" style="font-size:38px">“Como estou vivendo aquilo que ainda não aconteceu?”</p></div>
+<div class="card reveal" style="display:grid;grid-template-columns:360px 1fr;gap:26px;align-items:center"><span class="pill">Depressão</span><p class="quote" style="font-size:38px">“Como está meu contato comigo, com o outro e com a vida?”</p></div>
+<div class="card reveal" style="display:grid;grid-template-columns:360px 1fr;gap:26px;align-items:center"><span class="pill">Sofrimento existencial</span><p class="quote" style="font-size:38px">“O que essa experiência significa para minha existência?”</p></div>
+</div>
+</div>
+
+</section>
+
+<!-- 22 FINALIZAR -->
+<section class="slide" data-title="Para finalizar">
+<div class="slide-inner" style="text-align:left;align-items:flex-start">
+<div class="eyebrow reveal">Para finalizar</div>
+<p class="reveal quote" style="font-size:60px;line-height:1.4;max-width:1550px">Não é sobre fazer o sofrimento desaparecer, mas sobre desenvolver maneiras saudáveis de lidar com ele.</p>
+</div>
+<div class="footer"><span>Não reduzir a pessoa ao sofrimento</span><span>22</span><span class="bar"></span></div>
+</section>
+
+<!-- 23 PERGUNTAS -->
+<section class="slide dark" data-title="Perguntas">
+<div class="slide-inner" style="text-align:left;align-items:flex-start">
+<h1 class="reveal" style="font-size:150px">Obrigada!</h1>
+<p class="reveal sub" style="font-size:40px; margin-top: 26px;">Perguntas, reflexões ou experiências?</p>
+
+<p class="reveal small" style="color:#cfd8cf;margin-top:26px">Giovana de Morais Zago • Psicóloga | CRP-PR 08/45995</p>
+</div>
+
+</section>
+
+<!-- 24 REFERENCIAS -->
+<section class="slide" data-title="Referências">
+<div class="slide-inner">
+<h2 class="reveal" style="font-size:64px">Referências</h2>
+<div class="reveal" style="font-size:25px;line-height:1.7;margin-top:20px;max-width:1600px">
+<p><b>BRITO PINTO, Ênio.</b> Dialogar com a ansiedade: uma vereda para o cuidado. São Paulo: Summus, 2021.</p>
+<p><b>FRAZÃO, Lilian Meyer; FUKUMITSU, Karina Okajima (org.).</b> Gestalt-terapia: fundamentos epistemológicos e influências filosóficas. São Paulo: Summus.</p>
+<p><b>FUKUMITSU, Karina Okajima.</b> Produções sobre sofrimento existencial, crises, saúde existencial e processos autodestrutivos.</p>
+<p><b>PERLS, Frederick; HEFFERLINE, Ralph; GOODMAN, Paul.</b> Gestalt Therapy: Excitement and Growth in the Human Personality.</p>
+<p><b>YONTEF, Gary.</b> Awareness, Dialogue and Process.</p>
+</div>
+
+</div>
+<div class="footer"><span>Gestalt-terapia e Saúde Mental</span><span>24</span><span class="bar"></span></div>
+</section>
+
+</main>
+</div>
+<div class="deck-controls"><button id="prev" aria-label="Anterior">‹</button><div id="progress"><div id="progressFill"></div></div><span id="counter">1 / 24</span><button id="next" aria-label="Próximo">›</button></div>
+<div class="side-controls"><button id="btnOverview" aria-label="Visão geral" title="Visão geral (O)">▦</button><button id="btnFull" aria-label="Tela cheia" title="Tela cheia (F)">⛶</button><button id="btnPDF" class="pillbtn" title="Exportar PDF">PDF</button><button id="btnPPTX" class="pillbtn" title="Exportar PPTX editável">PPTX</button></div>
+<script>
+(function(){
+var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+var stage=document.getElementById('deckStage');
+var cur=0, counter=document.getElementById('counter'), fill=document.getElementById('progressFill');
+function scale(){var f=Math.min(window.innerWidth/1920,window.innerHeight/1080);var x=(window.innerWidth-1920*f)/2;var y=(window.innerHeight-1080*f)/2;stage.style.transform='translate('+x+'px,'+y+'px) scale('+f+')';}
+window.addEventListener('resize',scale);scale();
+function show(i){cur=Math.max(0,Math.min(i,slides.length-1));slides.forEach(function(s,k){s.classList.toggle('active',k===cur);s.classList.toggle('visible',k===cur);});counter.textContent=(cur+1)+' / '+slides.length;fill.style.width=((cur+1)/slides.length*100)+'%';}
+document.getElementById('prev').addEventListener('click',function(e){e.stopPropagation();show(cur-1);});
+document.getElementById('next').addEventListener('click',function(e){e.stopPropagation();show(cur+1);});
+document.getElementById('btnOverview').addEventListener('click',function(e){e.stopPropagation();document.body.classList.toggle('overview');});
+document.getElementById('btnFull').addEventListener('click',function(e){e.stopPropagation();if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}else{document.exitFullscreen();}});
+document.getElementById('btnPDF').addEventListener('click',function(e){e.stopPropagation();window.print();});
+document.getElementById('btnPPTX').addEventListener('click',function(e){e.stopPropagation();exportPPTX();});
+function exportPPTX(){try{var bytes=buildPPTX(SLIDES_DATA);var blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gestalt-terapia-saude-mental-24-slides.pptx';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},800);}catch(err){alert('Não foi possível gerar o PPTX: '+err.message);}}
+window.exportPDF=function(){window.print();};window.exportPPTX=exportPPTX;
+document.addEventListener('keydown',function(e){
+if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.getAttribute('contenteditable'))return;
+if(['ArrowRight',' ','PageDown'].indexOf(e.key)>=0){e.preventDefault();show(cur+1);}
+else if(['ArrowLeft','PageUp'].indexOf(e.key)>=0){e.preventDefault();show(cur-1);}
+else if(e.key==='Home'){show(0);}else if(e.key==='End'){show(slides.length-1);}
+else if(e.key.toLowerCase()==='f'){if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}else{document.exitFullscreen();}}
+else if(e.key.toLowerCase()==='o'){document.body.classList.toggle('overview');}
+});
+slides.forEach(function(s,idx){s.addEventListener('click',function(){if(document.body.classList.contains('overview')){show(idx);document.body.classList.remove('overview');}});});
+var sx=null;document.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',function(e){if(sx===null)return;var dx=e.changedTouches[0].clientX-sx;if(dx<-50)show(cur+1);else if(dx>50)show(cur-1);sx=null;},{passive:true});
+document.addEventListener('wheel',function(e){if(document.body.classList.contains('overview'))return;},{passive:true});
+show(0);
+})();
+</script>
+<script id="pptx-lib">
+/* === DADOS + GERADOR PPTX (zero dependência) === */
+'use strict';
+const SLIDES_DATA=[
+{t:'Gestalt-terapia e Saúde Mental',b:['Intervenções em Ansiedade, Depressão e Sofrimento Existencial','Giovana de Morais Zago · Psicóloga | CRP-PR 08/45995']},
+{t:'Um olhar para o sofrimento humano',b:['Ansiedade: futuro, antecipação, incerteza, controle','Depressão: distanciamento, perda de possibilidades','Sofrimento existencial: sentido, escolhas, liberdade','Antes do sintoma, o contexto; antes do rótulo, a relação']},
+{t:'Antes do sintoma, existe uma pessoa',b:['História, relações, corpo, contexto','Necessidades, experiências, possibilidades','A pessoa e sua subjetividade']},
+{t:'Compreender a pessoa em relação',b:['Campo: pessoa e ambiente em relação','Contato: como encontra e responde ao mundo','Awareness: perceber-se a si e à relação','Aqui-e-agora: a experiência no presente','Ajustamento criativo: respostas possíveis ao campo','Nada isolado: campo, contato e aqui agora']},
+{t:'O passado importa pela forma como se manifesta hoje!',b:['História, experiência atual, awareness, novas possibilidades','Agradar para ser aceita, dificuldade de dizer não, angústia']},
+{t:'Ansiedade: quando o futuro ocupa o presente',b:['Antecipação, incerteza, controle','Tensão corporal, preocupação','Ênio Brito Pinto: do controle e da luta ao diálogo e ao cuidado']},
+{t:'Em vez de eliminar, compreender',b:['De “como faço isso desaparecer?” para “o que acontece comigo?”','O que antecipo, tento controlar, evito','O que sinto no corpo; o que significa não saber','Qual a função dessa ansiedade?']},
+{t:'Exemplo clínico: preciso saber se vai dar tudo certo',b:['Pensamentos acelerados, necessidade de prever','Intolerância à incerteza, tentativa de controle','O que significa não saber? O que sente no corpo?']},
+{t:'Intervenções possíveis para ansiedade',b:['Exploração fenomenológica: como isso acontece para você','Awareness corporal: o que percebe no corpo','Amplificação, experimentação, diálogo','A técnica nasce do encontro']},
+{t:'Depressão: quando as possibilidades diminuem',b:['Distanciamento, perda de interesse, desesperança','Antes de devolver função: como ela está vivendo?']},
+{t:'Depressão e contato',b:['Consigo: o que sinto e preciso','Com o outro, com atividades, com projetos','Com o que tinha sentido: o que foi perdido']},
+{t:'Do que você sente falta?',b:['De alguém, de uma relação, de um projeto','De uma versão de si, de um desejo, de sentido']},
+{t:'Sofrimento existencial',b:['Nem sempre: “como faço isso passar?”','Às vezes: “o que isso significa para mim?”','Sentido, escolhas, liberdade, perdas, finitude']},
+{t:'Karina Fukumitsu: sofrer e cuidar',b:['Acolher sem reduzir a pessoa à dor','Compreender a experiência e avaliar riscos','Sustentar a crise e construir cuidado junto']},
+{t:'Exemplo clínico: uma vida aparentemente bem',b:['“Não sei se é essa vida que eu quero”','O que perdeu sentido? Quais escolhas são realmente suas?','Método fenomenológico','O que vem do outro? O que gostaria de experimentar?']},
+{t:'A intervenção nasce do encontro',b:['Presença, diálogo, awareness, contato, experimentação','O que acontece aqui, entre nós, neste momento?']},
+{t:'Compreender antes de intervir',b:['Uma possibilidade de raciocínio clínico','Aproximar-se da experiência e ampliar a awareness','Reconhecer necessidades, contato e ajustamento','Ampliar possibilidades']},
+{t:'Vamos experimentar?',b:['O que está acontecendo comigo agora? Sem resposta certa','Participe se for confortável']},
+{t:'O que você notou em você?',b:['Escreva uma palavra no chat','Tudo é válido']},
+{t:'Awareness em 4 movimentos',b:['Perceber, reconhecer, dar espaço, ampliar','Aproximar-se em vez de eliminar']},
+{t:'A clínica começa no encontro',b:['Ansiedade: como vivo o que ainda não aconteceu','Depressão: como está meu contato com a vida','Existencial: o que isso significa para mim']},
+{t:'Para finalizar',b:['Não é sobre fazer o sofrimento desaparecer, mas sobre desenvolver maneiras saudáveis de lidar com ele.']},
+{t:'Obrigada pela atenção!',b:['Giovana de Morais Zago · Psicóloga | CRP-PR 08/45995']},
+{t:'Referências',b:['Brito Pinto (2021); Frazão e Fukumitsu; Fukumitsu','Perls, Hefferline e Goodman; Yontef']}
+];
+const CRC_TABLE=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++){c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);}t[n]=c;}return t;})();
+function crc32(bytes){let c=0xFFFFFFFF;for(let i=0;i<bytes.length;i++){c=CRC_TABLE[(c^bytes[i])&255]^(c>>>8);}return (c^0xFFFFFFFF)>>>0;}
+function pptxEscape(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function zipStore(files){
+  const enc=new TextEncoder();const chunks=[];const central=[];let offset=0;
+  const le=(n,b)=>{const a=[];for(let i=0;i<b;i++){a.push(n&255);n=Math.floor(n/256);}return a;};
+  files.forEach(pair=>{
+    const nb=enc.encode(pair[0]);const data=pair[1];const crc=crc32(data);
+    const lh=[0x50,0x4b,0x03,0x04,20,0,0,8,0,0,0,0,0,0].concat(le(crc,4),le(data.length,4),le(data.length,4),le(nb.length,2),[0,0]);
+    chunks.push(new Uint8Array(lh),nb,data);
+    central.push({nb:nb,crc:crc,size:data.length,offset:offset});
+    offset+=lh.length+nb.length+data.length;
+  });
+  const cdStart=offset;const cd=[];
+  central.forEach(c=>{
+    const h=[0x50,0x4b,0x01,0x02,20,0,20,0,0,8,0,0,0,0,0,0].concat(le(c.crc,4),le(c.size,4),le(c.size,4),le(c.nb.length,2),[0,0,0,0,0,0,0,0,0,0,0,0]).concat(le(c.offset,4));
+    cd.push(new Uint8Array(h),c.nb);offset+=h.length+c.nb.length;
+  });
+  const cdSize=offset-cdStart;
+  const end=[0x50,0x4b,0x05,0x06,0,0,0,0].concat(le(central.length,2),le(central.length,2),le(cdSize,4),le(cdStart,4),[0,0]);
+  const out=new Uint8Array(offset+end.length);let p=0;
+  const push=a=>{out.set(a,p);p+=a.length;};
+  chunks.forEach(push);cd.forEach(push);push(new Uint8Array(end));
+  return out;
+}
+const NS_A='http://schemas.openxmlformats.org/drawingml/2006/main';
+const NS_P='http://schemas.openxmlformats.org/presentationml/2006/main';
+const NS_R='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+const XML_HEAD='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+const REL_BASE='http://schemas.openxmlformats.org/officeDocument/2006/relationships/';
+function relsXml(items){let s=XML_HEAD+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';items.forEach(it=>{s+='<Relationship Id="'+it[0]+'" Type="'+REL_BASE+it[1]+'" Target="'+it[2]+'"/>';});return s+'</Relationships>';}
+function contentTypes(n){
+  let s=XML_HEAD+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/><Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/><Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/><Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>';
+  for(let i=1;i<=n;i++){s+='<Override PartName="/ppt/slides/slide'+i+'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';}
+  return s+'</Types>';
+}
+function presentationXml(n){
+  let s=XML_HEAD+'<p:presentation xmlns:a="'+NS_A+'" xmlns:r="'+NS_R+'" xmlns:p="'+NS_P+'"><p:sldMasterIdLst><p:sldMasterId r:id="rId1"/></p:sldMasterIdLst><p:sldIdLst>';
+  for(let i=1;i<=n;i++){s+='<p:sldId id="'+(255+i)+'" r:id="rId'+(2+i)+'"/>';}
+  return s+'</p:sldIdLst><p:sldSz cx="12192000" cy="6858000" type="screen16x9"/><p:notesSz cx="6858000" cy="9144000"/></p:presentation>';
+}
+function presentationRels(n){const items=[['rId1','slideMaster','slideMasters/slideMaster1.xml'],['rId2','theme','theme/theme1.xml']];for(let i=1;i<=n;i++){items.push(['rId'+(2+i),'slide','slides/slide'+i+'.xml']);}return relsXml(items);}
+function themeXml(){
+  return XML_HEAD+'<a:theme xmlns:a="'+NS_A+'" name="Gestalt"><a:themeElements>'
+  +'<a:clrScheme name="Gestalt"><a:dk1><a:srgbClr val="1B3A34"/></a:dk1><a:lt1><a:srgbClr val="ECE7DE"/></a:lt1><a:dk2><a:srgbClr val="2F5B4F"/></a:dk2><a:lt2><a:srgbClr val="F6F1E8"/></a:lt2><a:accent1><a:srgbClr val="266052"/></a:accent1><a:accent2><a:srgbClr val="2F5B4F"/></a:accent2><a:accent3><a:srgbClr val="5D726B"/></a:accent3><a:accent4><a:srgbClr val="8AA396"/></a:accent4><a:accent5><a:srgbClr val="D9E4DC"/></a:accent5><a:accent6><a:srgbClr val="22322E"/></a:accent6><a:hlink><a:srgbClr val="266052"/></a:hlink><a:folHlink><a:srgbClr val="2F5B4F"/></a:folHlink></a:clrScheme>'
+  +'<a:fmtScheme name="Gestalt"><a:fillStyleLst><a:solidFill><a:schemeClr val="lt1"/></a:solidFill><a:solidFill><a:schemeClr val="accent1"/></a:solidFill><a:solidFill><a:schemeClr val="dk1"/></a:solidFill></a:fillStyleLst>'
+  +'<a:lnStyleLst><a:ln w="12700"><a:solidFill><a:schemeClr val="accent1"/></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="25400"><a:solidFill><a:schemeClr val="dk1"/></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="38100"><a:solidFill><a:schemeClr val="accent1"/></a:solidFill><a:prstDash val="solid"/></a:ln></a:lnStyleLst>'
+  +'<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst>'
+  +'<a:bgFillStyleLst><a:solidFill><a:schemeClr val="lt1"/></a:solidFill><a:solidFill><a:schemeClr val="dk1"/></a:solidFill><a:solidFill><a:schemeClr val="accent1"/></a:solidFill></a:bgFillStyleLst></a:fmtScheme>'
+  +'<a:fontScheme name="Gestalt"><a:majorFont><a:latin typeface="Georgia"/><a:ea typeface="Georgia"/><a:cs typeface="Georgia"/></a:majorFont><a:minorFont><a:latin typeface="Calibri"/><a:ea typeface="Calibri"/><a:cs typeface="Calibri"/></a:minorFont></a:fontScheme>'
+  +'</a:themeElements></a:theme>';
+}
+function masterXml(){
+  return XML_HEAD+'<p:sldMaster xmlns:a="'+NS_A+'" xmlns:p="'+NS_P+'" xmlns:r="'+NS_R+'"><p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="ECE7DE"/></a:solidFill></p:bgPr></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree></p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/><p:sldLayoutIdLst><p:sldLayoutId id="2147483649" r:id="rId1"/></p:sldLayoutIdLst></p:sldMaster>';
+}
+function layoutXml(){
+  return XML_HEAD+'<p:sldLayout xmlns:a="'+NS_A+'" xmlns:p="'+NS_P+'" xmlns:r="'+NS_R+'" preserve="1"><p:cSld name="Em branco"><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>';
+}
+function runPara(text,sz,bold,color,latin){return '<a:r><a:rPr lang="pt-BR" sz="'+sz+'"'+(bold?' b="1"':'')+'><a:solidFill><a:srgbClr val="'+color+'"/></a:solidFill><a:latin typeface="'+latin+'"/></a:rPr><a:t>'+pptxEscape(text)+'</a:t></a:r>';}
+function slideXml(s){
+  let paras='<a:p><a:pPr algn="ctr"/>'+runPara(s.t,4000,true,'1B3A34','Georgia')+'</a:p>';
+  let body='';
+  s.b.forEach(line=>{body+='<a:p><a:pPr marL="342900" indent="-342900" spcAft="10000"><a:buChar char="•"/></a:pPr>'+runPara(line,2400,false,'22322E','Calibri')+'</a:p>';});
+  const foot='<a:p><a:pPr algn="ctr"/>'+runPara('Giovana de Morais Zago · Psicóloga | CRP-PR 08/45995',1400,false,'5D726B','Calibri')+'</a:p>';
+  const shape=(id,name,x,y,cx,cy,inner)=>'<p:sp><p:nvSpPr><p:cNvPr id="'+id+'" name="'+name+'"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="'+x+'" y="'+y+'"/><a:ext cx="'+cx+'" cy="'+cy+'"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr><p:txBody><a:bodyPr wrap="square"><a:noAutofit/></a:bodyPr><a:lstStyle/>'+inner+'</p:txBody></p:sp>';
+  return XML_HEAD+'<p:sld xmlns:a="'+NS_A+'" xmlns:p="'+NS_P+'" xmlns:r="'+NS_R+'"><p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
+  +shape(2,'Titulo',685800,457200,10820400,1600200,paras)
+  +shape(3,'Conteudo',685800,2286000,10820400,3657600,body)
+  +shape(4,'Rodape',685800,6400800,10820400,457200,foot)
+  +'</p:spTree></p:cSld><p:clrMapOvr><a:overrideClrMapping bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/></p:clrMapOvr></p:sld>';
+}
+function buildPPTX(slides){
+  const enc=new TextEncoder();const files=[];
+  const add=(name,str)=>files.push([name,enc.encode(str)]);
+  add('[Content_Types].xml',contentTypes(slides.length));
+  add('_rels/.rels',XML_HEAD+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/></Relationships>');
+  add('ppt/presentation.xml',presentationXml(slides.length));
+  add('ppt/_rels/presentation.xml.rels',presentationRels(slides.length));
+  add('ppt/theme/theme1.xml',themeXml());
+  add('ppt/slideMasters/slideMaster1.xml',masterXml());
+  add('ppt/slideMasters/_rels/slideMaster1.xml.rels',relsXml([['rId1','slideLayout','../slideLayouts/slideLayout1.xml'],['rId2','theme','../theme/theme1.xml']]));
+  add('ppt/slideLayouts/slideLayout1.xml',layoutXml());
+  add('ppt/slideLayouts/_rels/slideLayout1.xml.rels',relsXml([['rId1','slideMaster','../slideMasters/slideMaster1.xml']]));
+  slides.forEach((s,idx)=>{const n=idx+1;add('ppt/slides/slide'+n+'.xml',slideXml(s));add('ppt/slides/_rels/slide'+n+'.xml.rels',relsXml([['rId1','slideLayout','../slideLayouts/slideLayout1.xml']]));});
+  return zipStore(files);
+}
+</script>
+</body>
+</html>
